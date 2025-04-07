@@ -1,10 +1,15 @@
 from django.db.models import Count, F
 from django.utils.dateparse import parse_date
 from rest_framework import viewsets
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
 
-from cinema.models import Genre, Actor, CinemaHall, Movie, MovieSession, Order, Ticket
+from cinema.models import (
+    Genre,
+    Actor,
+    CinemaHall,
+    Movie,
+    MovieSession,
+    Order,
+)
 
 from cinema.serializers import (
     GenreSerializer,
@@ -17,7 +22,6 @@ from cinema.serializers import (
     MovieSessionRetrieveSerializer,
     MovieListSerializer,
     OrderSerializer,
-    TicketSerializer,
     OrderListSerializer,
     OrderPagination,
 )
@@ -102,8 +106,8 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
                     tickets_available=F("cinema_hall__rows")
                     * F("cinema_hall__seats_in_row")
                     - Count("tickets")
-                    )
                 )
+            )
         return queryset.distinct()
 
 

@@ -112,7 +112,7 @@ class TicketSerializer(serializers.ModelSerializer):
                 fields=["movie_session", "row", "seat"],
             )
         ]
-       fields = (
+        fields = (
            "id",
            "row",
            "seat",
