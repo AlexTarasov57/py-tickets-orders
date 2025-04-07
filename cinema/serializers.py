@@ -105,13 +105,19 @@ class MovieSessionRetrieveSerializer(MovieSessionSerializer):
 class TicketSerializer(serializers.ModelSerializer):
 
     class Meta:
-       model = Ticket
-       validators = [
-           UniqueTogetherValidator(
-               queryset=Ticket.objects.all(),
-               fields=["movie_session", "row", "seat"],
-           )]
-       fields = ("id", "row", "seat", "movie_session")
+        model = Ticket
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Ticket.objects.all(),
+                fields=["movie_session", "row", "seat"],
+            )
+        ]
+       fields = (
+           "id",
+           "row",
+           "seat",
+           "movie_session"
+       )
 
 
 class TicketListSerializer(TicketSerializer):
@@ -125,6 +131,7 @@ class TicketListSerializer(TicketSerializer):
             "seat",
             "movie_session",
         )
+
 
 class OrderPagination(PageNumberPagination):
     page_size = 1
@@ -156,9 +163,14 @@ class OrderSerializer(serializers.ModelSerializer):
                 )
             return order
 
+
 class OrderListSerializer(OrderSerializer):
     pagination_class = OrderPagination
-    tickets = TicketListSerializer(many=True, read_only=False, allow_empty=False)
+    tickets = TicketListSerializer(
+        many=True,
+        read_only=False,
+        allow_empty=False
+    )
 
     class Meta:
         model = Order

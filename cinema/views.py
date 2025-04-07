@@ -15,7 +15,11 @@ from cinema.serializers import (
     MovieSessionListSerializer,
     MovieDetailSerializer,
     MovieSessionRetrieveSerializer,
-    MovieListSerializer, OrderSerializer, TicketSerializer, OrderListSerializer, OrderPagination,
+    MovieListSerializer,
+    OrderSerializer,
+    TicketSerializer,
+    OrderListSerializer,
+    OrderPagination,
 )
 
 
@@ -94,18 +98,13 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
             queryset = (
                 queryset
                 .select_related("movie", "cinema_hall")
-                .annotate(tickets_available=F("cinema_hall__rows")
-                * F("cinema_hall__seats_in_row")
-                - Count("tickets")
-            )
-        )
+                .annotate(
+                    tickets_available=F("cinema_hall__rows")
+                    * F("cinema_hall__seats_in_row")
+                    - Count("tickets")
+                    )
+                )
         return queryset.distinct()
-
-
-class OrderPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = "page_size"
-    max_page_size = 100
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -119,7 +118,6 @@ class OrderViewSet(viewsets.ModelViewSet):
         if self.action == "retrieve":
             return OrderSerializer
         return OrderSerializer
-
 
     def get_queryset(self):
         return (
@@ -135,5 +133,3 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-
